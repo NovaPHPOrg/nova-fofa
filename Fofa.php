@@ -14,12 +14,11 @@ class Fofa
      * @throws HttpException
      * @throws JsonDecodeException
      */
-    public static function query($query):array
+    public static function query($query,$size=5):array
     {
         $key = config('fofa_key');
-        $url = "https://fofa.info/api/v1/search/all?key=$key&qbase64=".base64_encode($query);
-        $http = HttpClient::init($url);
-        $response = $http->get()->send();
+        $http = HttpClient::init("https://fofa.info");
+        $response = $http->get()->send("api/v1/search/all?key=$key&size=$size&qbase64=".base64_encode($query));
         if ($response->getHttpCode()!=200)return [];
         $json = Json::decode($response->getBody(),true);
         if ($json['error'] !==false)return [];
